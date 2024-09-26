@@ -1,0 +1,1175 @@
+<html><head><base href="https://advanced-pentest-ai.com/">
+<title>HackScope Pro: AI-Powered Pentest Guide Generator</title>
+<style>
+    :root {
+        --primary-color: #1a237e;
+        --secondary-color: #303f9f;
+        --accent-color: #3f51b5;
+        --text-color: #ffffff;
+        --bg-color: #f5f5f5;
+        --success-color: #4caf50;
+        --warning-color: #ff9800;
+        --error-color: #f44336;
+        --card-bg: #ffffff;
+        --border-radius: 8px;
+        --box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+    }
+    body, html {
+        font-family: 'Roboto', Arial, sans-serif;
+        line-height: 1.6;
+        color: #333;
+        margin: 0;
+        padding: 0;
+        height: 100%;
+        background-color: var(--bg-color);
+    }
+    .container {
+        display: grid;
+        grid-template-columns: 300px 1fr 300px;
+        grid-template-rows: auto 1fr;
+        height: 100vh;
+        max-width: 1800px;
+        margin: 0 auto;
+        gap: 20px;
+        padding: 20px;
+        box-sizing: border-box;
+    }
+    .header {
+        grid-column: 1 / -1;
+        background-color: var(--primary-color);
+        color: var(--text-color);
+        padding: 1rem;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        border-radius: var(--border-radius);
+        box-shadow: var(--box-shadow);
+    }
+    .search-bar {
+        flex-grow: 1;
+        margin: 0 2rem;
+        position: relative;
+    }
+    .search-bar input {
+        width: 100%;
+        padding: 0.75rem 1rem;
+        border: none;
+        border-radius: 25px;
+        font-size: 1rem;
+        background-color: rgba(255,255,255,0.1);
+        color: var(--text-color);
+        transition: all 0.3s ease;
+    }
+    .search-bar input:focus {
+        background-color: rgba(255,255,255,0.2);
+        outline: none;
+    }
+    .search-bar input::placeholder {
+        color: rgba(255,255,255,0.7);
+    }
+    .sidebar {
+        background-color: var(--card-bg);
+        color: #333;
+        padding: 1.5rem;
+        border-radius: var(--border-radius);
+        box-shadow: var(--box-shadow);
+        overflow-y: auto;
+    }
+    .main-content {
+        padding: 2rem;
+        background-color: var(--card-bg);
+        border-radius: var(--border-radius);
+        box-shadow: var(--box-shadow);
+        overflow-y: auto;
+    }
+    .sidebar-right {
+        background-color: var(--card-bg);
+        color: #333;
+        padding: 1.5rem;
+        border-radius: var(--border-radius);
+        box-shadow: var(--box-shadow);
+        overflow-y: auto;
+    }
+    h1, h2, h3 {
+        margin-top: 0;
+        color: var(--primary-color);
+    }
+    .tool {
+        background-color: #fff;
+        border-left: 5px solid var(--accent-color);
+        padding: 1.5rem;
+        margin-bottom: 1rem;
+        box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        transition: all 0.3s ease;
+        border-radius: var(--border-radius);
+    }
+    .tool:hover {
+        transform: translateY(-3px);
+        box-shadow: 0 4px 8px rgba(0,0,0,0.15);
+    }
+    .command {
+        background-color: #263238;
+        color: #eceff1;
+        padding: 1rem;
+        border-radius: 5px;
+        font-family: 'Fira Code', monospace;
+        white-space: pre-wrap;
+        margin-top: 1rem;
+        position: relative;
+        overflow-x: auto;
+    }
+    .command::before {
+        content: '$ ';
+        color: #64ffda;
+        font-weight: bold;
+    }
+    .explanation {
+        font-style: italic;
+        margin-top: 1rem;
+        color: #546e7a;
+        background-color: #eceff1;
+        padding: 1rem;
+        border-radius: 5px;
+    }
+    .option {
+        margin-bottom: 1rem;
+        background-color: #f0f0f0;
+        padding: 1rem;
+        border-radius: var(--border-radius);
+        transition: all 0.3s ease;
+    }
+    .option:hover {
+        background-color: #e0e0e0;
+    }
+    .chat-box {
+        background-color: #fff;
+        border-radius: var(--border-radius);
+        padding: 1.5rem;
+        margin-top: 1.5rem;
+        box-shadow: var(--box-shadow);
+    }
+    .chat-messages {
+        height: 300px;
+        overflow-y: auto;
+        border: 1px solid #e0e0e0;
+        padding: 1rem;
+        margin-bottom: 1rem;
+        background-color: #f5f5f5;
+        border-radius: 5px;
+    }
+    .chat-input {
+        width: 100%;
+        padding: 0.75rem;
+        border: 2px solid var(--accent-color);
+        border-radius: 25px;
+        font-size: 1rem;
+        transition: all 0.3s ease;
+    }
+    .chat-input:focus {
+        outline: none;
+        box-shadow: 0 0 0 3px rgba(63, 81, 181, 0.3);
+    }
+    .terminal {
+        background-color: #000;
+        color: #0f0;
+        font-family: 'Fira Code', monospace;
+        padding: 1rem;
+        height: 300px;
+        overflow-y: auto;
+        margin-top: 1.5rem;
+        position: relative;
+        border-radius: var(--border-radius);
+        box-shadow: inset 0 0 10px rgba(0,255,0,0.5);
+    }
+    .terminal-output {
+        white-space: pre-wrap;
+        word-wrap: break-word;
+    }
+    .terminal-input {
+        background-color: transparent;
+        border: none;
+        color: #0f0;
+        font-family: 'Fira Code', monospace;
+        width: 100%;
+        outline: none;
+    }
+    .btn {
+        background-color: var(--accent-color);
+        color: var(--text-color);
+        border: none;
+        padding: 0.75rem 1.5rem;
+        border-radius: 25px;
+        cursor: pointer;
+        transition: all 0.3s ease;
+        font-weight: bold;
+        text-transform: uppercase;
+        letter-spacing: 1px;
+    }
+    .btn:hover {
+        background-color: #303f9f;
+        transform: translateY(-2px);
+        box-shadow: 0 4px 8px rgba(0,0,0,0.2);
+    }
+    .progress-bar {
+        width: 100%;
+        height: 10px;
+        background-color: #e0e0e0;
+        border-radius: 5px;
+        overflow: hidden;
+        margin-top: 1rem;
+    }
+    .progress {
+        width: 0;
+        height: 100%;
+        background-color: var(--success-color);
+        transition: width 0.5s ease;
+    }
+    .status {
+        margin-top: 0.5rem;
+        font-weight: bold;
+        color: var(--success-color);
+    }
+    .ai-insights {
+        background-color: #e3f2fd;
+        border-left: 5px solid #2196f3;
+        padding: 1rem;
+        margin-top: 1.5rem;
+        border-radius: var(--border-radius);
+    }
+    .vulnerability-list {
+        list-style-type: none;
+        padding: 0;
+    }
+    .vulnerability-item {
+        background-color: #fff;
+        border: 1px solid #e0e0e0;
+        border-radius: var(--border-radius);
+        padding: 1rem;
+        margin-bottom: 1rem;
+        transition: all 0.3s ease;
+    }
+    .vulnerability-item:hover {
+        box-shadow: 0 3px 10px rgba(0,0,0,0.1);
+    }
+    .vulnerability-title {
+        font-weight: bold;
+        color: var(--primary-color);
+    }
+    .vulnerability-description {
+        margin-top: 0.5rem;
+        color: #666;
+    }
+    .ai-recommendation {
+        background-color: #e8f5e9;
+        border-left: 5px solid #4caf50;
+        padding: 1rem;
+        margin-top: 1rem;
+        border-radius: 5px;
+    }
+    .logo {
+        width: 200px;
+        height: 60px;
+    }
+    .dashboard {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+        gap: 20px;
+        margin-top: 20px;
+    }
+    .dashboard-card {
+        background-color: var(--card-bg);
+        border-radius: var(--border-radius);
+        padding: 20px;
+        box-shadow: var(--box-shadow);
+    }
+    .dashboard-card h3 {
+        margin-top: 0;
+        color: var(--primary-color);
+    }
+    .optimization-tips {
+        background-color: #fff3e0;
+        border-left: 5px solid #ff9800;
+        padding: 1rem;
+        margin-top: 1.5rem;
+        border-radius: var(--border-radius);
+    }
+    .resource-links {
+        margin-top: 1.5rem;
+    }
+    .resource-links a {
+        display: block;
+        color: var(--accent-color);
+        text-decoration: none;
+        margin-bottom: 0.5rem;
+    }
+    .resource-links a:hover {
+        text-decoration: underline;
+    }
+    .tab-container {
+        margin-top: 20px;
+    }
+    .tab-buttons {
+        display: flex;
+        border-bottom: 2px solid var(--accent-color);
+    }
+    .tab-button {
+        padding: 10px 20px;
+        background-color: #f0f0f0;
+        border: none;
+        cursor: pointer;
+        transition: background-color 0.3s;
+    }
+    .tab-button.active {
+        background-color: var(--accent-color);
+        color: white;
+    }
+    .tab-content {
+        display: none;
+        padding: 20px;
+        background-color: white;
+        border-radius: 0 0 5px 5px;
+    }
+    .tab-content.active {
+        display: block;
+    }
+    #puter-file-explorer {
+        height: 300px;
+        border: 1px solid #ccc;
+        border-radius: var(--border-radius);
+        overflow: hidden;
+        margin-top: 1.5rem;
+    }
+    #puter-text-editor {
+        height: 400px;
+        border: 1px solid #ccc;
+        border-radius: var(--border-radius);
+        overflow: hidden;
+        margin-top: 1.5rem;
+    }
+    .puter-integration {
+        margin-top: 2rem;
+        padding: 1.5rem;
+        background-color: #e8eaf6;
+        border-radius: var(--border-radius);
+        box-shadow: var(--box-shadow);
+    }
+    .quick-tools, .predefined-commands {
+        margin-top: 20px;
+    }
+    .quick-tools .btn, .predefined-commands .btn {
+        margin: 5px;
+        font-size: 0.9em;
+    }
+    #main-web-shell {
+        height: 400px;
+    }
+    .notification {
+        position: fixed;
+        top: 20px;
+        right: 20px;
+        padding: 10px 20px;
+        border-radius: 5px;
+        color: white;
+        font-weight: bold;
+        z-index: 1000;
+    }
+    .notification.info { background-color: #2196F3; }
+    .notification.success { background-color: #4CAF50; }
+    .notification.error { background-color: #F44336; }
+    .guide-section {
+        margin-bottom: 20px;
+        padding: 15px;
+        background-color: #f9f9f9;
+        border-radius: 5px;
+        box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+    }
+    .guide-section h3 {
+        color: #2196F3;
+        border-bottom: 2px solid #2196F3;
+        padding-bottom: 5px;
+    }
+    .command-example {
+        background-color: #282c34;
+        color: #abb2bf;
+        padding: 10px;
+        border-radius: 5px;
+        font-family: 'Fira Code', monospace;
+        margin: 10px 0;
+        white-space: pre-wrap;
+    }
+    #search-query {
+        width: 70%;
+        padding: 10px;
+        margin-right: 10px;
+    }
+    #search-results {
+        margin-top: 20px;
+        background-color: #f5f5f5;
+        padding: 15px;
+        border-radius: 5px;
+        white-space: pre-wrap;
+        word-wrap: break-word;
+    }
+</style>
+<link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;700&family=Fira+Code&display=swap" rel="stylesheet">
+<script src="https://js.puter.com/v2/"></script>
+<script>
+    function showNotification(message, type = 'info') {
+        const notification = document.createElement('div');
+        notification.className = `notification ${type}`;
+        notification.textContent = message;
+        document.body.appendChild(notification);
+        setTimeout(() => notification.remove(), 5000);
+    }
+
+    function logError(error) {
+        console.error(error);
+        showNotification(`Error: ${error.message}`, 'error');
+    }
+
+    window.addEventListener('error', (event) => {
+        logError(event.error);
+    });
+
+    window.addEventListener('unhandledrejection', (event) => {
+        logError(event.reason);
+    });
+
+    document.addEventListener('DOMContentLoaded', function() {
+        const startVoiceBtn = document.getElementById('start-voice');
+        const stopVoiceBtn = document.getElementById('stop-voice');
+        let recognition;
+
+        if ('webkitSpeechRecognition' in window) {
+            recognition = new webkitSpeechRecognition();
+            recognition.continuous = true;
+            recognition.interimResults = true;
+
+            recognition.onresult = function(event) {
+                const last = event.results.length - 1;
+                const command = event.results[last][0].transcript.trim().toLowerCase();
+
+                if (event.results[last].isFinal) {
+                    chatInput.value = command;
+                    chatInput.dispatchEvent(new KeyboardEvent('keypress', {'key': 'Enter'}));
+                }
+            };
+
+            recognition.onerror = function(event) {
+                console.error('Speech recognition error:', event.error);
+                showNotification(`Speech recognition error: ${event.error}`, 'error');
+            };
+        } else {
+            console.log('Speech recognition not supported');
+            startVoiceBtn.style.display = 'none';
+        }
+
+        startVoiceBtn.addEventListener('click', function() {
+            if (recognition) {
+                recognition.start();
+                startVoiceBtn.style.display = 'none';
+                stopVoiceBtn.style.display = 'inline-block';
+                showNotification('Voice interaction started', 'info');
+            } else {
+                showNotification('Speech recognition not supported in this browser', 'error');
+            }
+        });
+
+        stopVoiceBtn.addEventListener('click', function() {
+            if (recognition) {
+                recognition.stop();
+                startVoiceBtn.style.display = 'inline-block';
+                stopVoiceBtn.style.display = 'none';
+                showNotification('Voice interaction stopped', 'info');
+            }
+        });
+
+        initializePuter();
+        const generateGuideBtn = document.getElementById('generate-guide');
+        const improveGuideBtn = document.getElementById('improve-guide');
+        const scopeUrlInput = document.getElementById('scope-url');
+        const pentestGuideDiv = document.getElementById('pentest-guide');
+        const chatInput = document.getElementById('chat-input');
+        const chatMessages = document.getElementById('chat-messages');
+        const kaliTerminal = document.getElementById('kali-terminal');
+        const terminalOutput = kaliTerminal.querySelector('.terminal-output');
+        const terminalInput = document.getElementById('terminal-input');
+        const aiAssistanceSlider = document.getElementById('ai-assistance');
+        const aiLevelDisplay = document.getElementById('ai-level-display');
+        const guideProgress = document.getElementById('guide-progress');
+        const guideStatus = document.getElementById('guide-status');
+        const aiInsightsContent = document.getElementById('ai-insights-content');
+        const vulnerabilityList = document.getElementById('vulnerability-list');
+        const optimizationTips = document.getElementById('optimization-tips');
+        const scopeOverview = document.getElementById('scope-overview');
+        const progressTracker = document.getElementById('progress-tracker');
+        const timeEstimation = document.getElementById('time-estimation');
+        const webShellInput = document.getElementById('web-shell-input');
+        const webShellOutput = document.querySelector('#web-shell .terminal-output');
+        const readAloudBtn = document.getElementById('read-aloud');
+        const pentestJournal = document.getElementById('pentest-journal');
+        const saveJournalBtn = document.getElementById('save-journal');
+        
+        const mainWebShellInput = document.getElementById('main-web-shell-input');
+        const mainWebShellOutput = document.querySelector('#main-web-shell .terminal-output');
+        const voiceSelect = document.getElementById('voice-select');
+
+        function populateVoiceList() {
+            voiceSelect.innerHTML = '';
+            speechSynthesis.getVoices().forEach((voice, index) => {
+                const option = new Option(voice.name, index);
+                voiceSelect.add(option);
+            });
+        }
+
+        populateVoiceList();
+        if (speechSynthesis.onvoiceschanged !== undefined) {
+            speechSynthesis.onvoiceschanged = populateVoiceList;
+        }
+
+        readAloudBtn.addEventListener('click', function() {
+            const selectedText = window.getSelection().toString();
+            if (selectedText) {
+                const utterance = new SpeechSynthesisUtterance(selectedText);
+                const voices = speechSynthesis.getVoices();
+                utterance.voice = voices[voiceSelect.value];
+                speechSynthesis.speak(utterance);
+            } else {
+                showNotification('Please select text to read aloud', 'info');
+            }
+        });
+
+        function initializePuter() {
+            if (typeof puter !== 'undefined') {
+                puter.auth.signIn().then(() => {
+                    console.log('Puter.js initialized successfully');
+                }).catch(error => {
+                    console.error('Error initializing Puter.js:', error);
+                    handlePuterError();
+                });
+            } else {
+                console.error('Puter.js failed to load');
+                handlePuterError();
+            }
+        }
+
+        function handlePuterError() {
+            const puterIntegration = document.getElementById('puter-integration');
+            const saveToPuterBtn = document.getElementById('save-to-puter');
+            const loadFromPuterBtn = document.getElementById('load-from-puter');
+
+            if (puterIntegration) {
+                puterIntegration.innerHTML = '<p>Puter.js integration is currently unavailable. Some features may be limited.</p>';
+            } else {
+                console.error('Puter integration element not found');
+            }
+
+            if (saveToPuterBtn) {
+                saveToPuterBtn.disabled = true;
+            } else {
+                console.error('Save to Puter button not found');
+            }
+
+            if (loadFromPuterBtn) {
+                loadFromPuterBtn.disabled = true;
+            } else {
+                console.error('Load from Puter button not found');
+            }
+        }
+
+        async function generateAIInsights(url) {
+            try {
+                const prompt = `Based on the bug bounty program at ${url}, provide key insights for a successful pentest, including potential high-value targets and common vulnerabilities specific to this program.`;
+                const response = await puter.ai.chat(prompt, {
+                    model: 'gpt-4',
+                    max_tokens: 500,
+                    temperature: 0.7
+                });
+                document.getElementById('ai-insights-content').innerHTML = response;
+            } catch (error) {
+                logError(error);
+                document.getElementById('ai-insights-content').innerHTML = '<p>Error generating AI insights. Please try again.</p>';
+            }
+        }
+
+        async function scrapeAndGenerateGuide(url) {
+            try {
+                guideProgress.style.width = '0%';
+                guideStatus.textContent = 'Generating guide...';
+                pentestGuideDiv.innerHTML = '<p>Analyzing scope and generating guide...</p>';
+
+                const steps = ['Analyzing scope', 'Generating reconnaissance steps', 'Creating vulnerability assessment', 'Compiling exploitation techniques', 'Finalizing report structure'];
+                let currentStep = 0;
+
+                const intervalId = setInterval(() => {
+                    if (currentStep < steps.length) {
+                        const progress = (currentStep + 1) * (100 / steps.length);
+                        guideProgress.style.width = `${progress}%`;
+                        guideStatus.textContent = steps[currentStep];
+                        currentStep++;
+                    } else {
+                        clearInterval(intervalId);
+                    }
+                }, 1000);
+
+                const prompt = `Analyze the following bug bounty program URL and generate a comprehensive, well-formatted pentest guide: ${url}. Include detailed steps for reconnaissance, vulnerability assessment, exploitation techniques, and reporting. Focus on identifying potential vulnerabilities and achieving rewards for bug identification. For each step, provide specific command-line examples that are ready to copy and paste, along with explanations of why each command is used. Format the guide with clear headings, subheadings, and bulleted lists for easy readability.`;
+
+                const response = await puter.ai.chat(prompt, {
+                    model: 'gpt-4',
+                    max_tokens: 3000,
+                    temperature: 0.7
+                });
+
+                clearInterval(intervalId);
+                pentestGuideDiv.innerHTML = formatGuide(`<h2>Pentest Guide for ${url}</h2>${response}`);
+                guideProgress.style.width = '100%';
+                guideStatus.textContent = 'Guide generated successfully';
+                showNotification('Pentest guide generated successfully!', 'success');
+
+                generateAIInsights(url);
+                generateVulnerabilities();
+                generateOptimizationTips();
+            } catch (error) {
+                logError(error);
+                pentestGuideDiv.innerHTML = '<p>Error generating pentest guide. Please try again.</p>';
+                guideStatus.textContent = 'Error generating guide';
+            }
+        }
+
+        async function generateVulnerabilities() {
+            try {
+                const prompt = 'Generate a list of 5 common web application vulnerabilities with brief descriptions and recommendations for testing in a bug bounty context.';
+                const response = await puter.ai.chat(prompt, {
+                    model: 'gpt-4',
+                    max_tokens: 1000,
+                    temperature: 0.7
+                });
+
+                const vulnerabilities = JSON.parse(response);
+                vulnerabilityList.innerHTML = '';
+                
+                for (const vuln of vulnerabilities) {
+                    const li = document.createElement('li');
+                    li.className = 'vulnerability-item';
+                    li.innerHTML = `
+                        <div class="vulnerability-title">${vuln.title}</div>
+                        <div class="vulnerability-description">${vuln.description}</div>
+                        <div class="ai-recommendation">${vuln.recommendation}</div>
+                    `;
+                    vulnerabilityList.appendChild(li);
+                }
+            } catch (error) {
+                logError(error);
+                vulnerabilityList.innerHTML = '<p>Error generating vulnerabilities. Please try again.</p>';
+            }
+        }
+
+        async function generateOptimizationTips() {
+            try {
+                const prompt = "Generate an optimized penetration testing workflow considering the latest tools and techniques, including specific command-line examples.";
+                const response = await puter.ai.chat(prompt, {
+                    model: 'gpt-4',
+                    max_tokens: 1000,
+                    temperature: 0.7
+                });
+                const optimizedWorkflow = document.getElementById('optimization-tips');
+                optimizedWorkflow.innerHTML = `<h4>Optimized Workflow:</h4>${response}`;
+            } catch (error) {
+                logError(error);
+                puter.ui.alert('Error optimizing workflow. Please try again.');
+            }
+        }
+        
+        async function handleAIAssistantChat(message) {
+            try {
+                const response = await puter.ai.chat(message, {
+                    model: 'gpt-4',
+                    max_tokens: 150,
+                    temperature: 0.7
+                });
+
+                // Speak the response
+                const utterance = new SpeechSynthesisUtterance(response);
+                synth.speak(utterance);
+                
+                return response;
+            } catch (error) {
+                logError(error);
+                return 'Sorry, I encountered an error. Please try again.';
+            }
+        }
+
+        async function performIntegratedSearch(query) {
+            if (!query) {
+                showNotification('Please enter a search query', 'error');
+                return;
+            }
+
+            searchResults.innerHTML = '<p>Searching...</p>';
+
+            try {
+                const shodanResults = await searchShodan(query);
+                const otxResults = await searchOTX(query);
+
+                searchResults.innerHTML = `
+                    <h4>Shodan Results</h4>
+                    <pre>${JSON.stringify(shodanResults, null, 2)}</pre>
+                    <h4>AlienVault OTX Results</h4>
+                    <pre>${JSON.stringify(otxResults, null, 2)}</pre>
+                `;
+            } catch (error) {
+                logError(error);
+                searchResults.innerHTML = '<p>Error performing search. Please try again.</p>';
+            }
+        }
+
+        async function searchShodan(query) {
+            // Implement Shodan API call here
+            // For demonstration, we'll return a mock result
+            return { ip: query, ports: [80, 443], vulns: ['CVE-2021-1234'] };
+        }
+
+        async function searchOTX(query) {
+            // Implement AlienVault OTX API call here
+            // For demonstration, we'll return a mock result
+            return { indicators: [query], pulses: ['Malicious Activity Detected'] };
+        }
+
+        generateGuideBtn.addEventListener('click', function() {
+            const scopeUrl = scopeUrlInput.value;
+            if (scopeUrl) {
+                scrapeAndGenerateGuide(scopeUrl);
+            } else {
+                showNotification('Please enter a valid bug bounty program URL or custom scope', 'error');
+            }
+        });
+
+        improveGuideBtn.addEventListener('click', async function() {
+            const currentGuide = pentestGuideDiv.innerHTML;
+            const prompt = `Analyze and improve the following pentest guide. Add more details, better formatting, and include more ready-to-use command-line examples with explanations:\n\n${currentGuide}`;
+            
+            try {
+                showNotification('Improving guide...', 'info');
+                const response = await puter.ai.chat(prompt, {
+                    model: 'gpt-4',
+                    max_tokens: 3000,
+                    temperature: 0.7
+                });
+                pentestGuideDiv.innerHTML = formatGuide(response);
+                showNotification('Guide improved successfully!', 'success');
+            } catch (error) {
+                logError(error);
+                showNotification('Error improving guide. Please try again.', 'error');
+            }
+        });
+
+        chatInput.addEventListener('keypress', async function(e) {
+            if (e.key === 'Enter') {
+                const message = chatInput.value;
+                chatMessages.innerHTML += `<p><strong>You:</strong> ${message}</p>`;
+                chatInput.value = '';
+
+                try {
+                    const aiResponse = await handleAIAssistantChat(message);
+                    chatMessages.innerHTML += `<p><strong>AI Assistant:</strong> ${aiResponse}</p>`;
+                } catch (error) {
+                    logError(error);
+                    chatMessages.innerHTML += `<p><strong>AI Assistant:</strong> Sorry, I encountered an error. Please try again.</p>`;
+                }
+                chatMessages.scrollTop = chatMessages.scrollHeight;
+            }
+        });
+
+        document.getElementById('generate-guide').addEventListener('click', function() {
+            generateVulnerabilities();
+            generateOptimizationTips();
+        });
+        
+        const tabButtons = document.querySelectorAll('.tab-button');
+        const tabContents = document.querySelectorAll('.tab-content');
+
+        tabButtons.forEach(button => {
+            button.addEventListener('click', () => {
+                const tabId = button.getAttribute('data-tab');
+                tabButtons.forEach(btn => btn.classList.remove('active'));
+                tabContents.forEach(content => content.classList.remove('active'));
+                button.classList.add('active');
+                document.getElementById(tabId).classList.add('active');
+            });
+        });
+
+        aiAssistanceSlider.addEventListener('input', function() {
+            const value = this.value;
+            let level;
+            switch(value) {
+                case '1':
+                    level = 'Minimal AI Assistance';
+                    break;
+                case '2':
+                    level = 'Low AI Assistance';
+                    break;
+                case '3':
+                    level = 'Moderate AI Assistance';
+                    break;
+                case '4':
+                    level = 'High AI Assistance';
+                    break;
+                case '5':
+                    level = 'Maximum AI Assistance';
+                    break;
+            }
+            aiLevelDisplay.textContent = level;
+            console.log(`AI Assistance level set to: ${level}`);
+        });
+
+        webShellInput.addEventListener('keypress', async function(e) {
+            if (e.key === 'Enter') {
+                const command = this.value;
+                webShellOutput.innerHTML += `<div>user@webshell:~$ ${command}</div>`;
+                try {
+                    const response = await fetch('/api/webshell', {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify({ command })
+                    });
+                    const result = await response.text();
+                    webShellOutput.innerHTML += `<div>${result}</div>`;
+                } catch (error) {
+                    logError(error);
+                    webShellOutput.innerHTML += '<div>Error executing command. Please try again.</div>';
+                }
+                this.value = '';
+            }
+        });
+
+        readAloudBtn.addEventListener('click', function() {
+            const selectedText = window.getSelection().toString();
+            if (selectedText) {
+                const utterance = new SpeechSynthesisUtterance(selectedText);
+                const voices = speechSynthesis.getVoices();
+                utterance.voice = voices[voiceSelect.value];
+                speechSynthesis.speak(utterance);
+            } else {
+                showNotification('Please select text to read aloud', 'info');
+            }
+        });
+
+        saveJournalBtn.addEventListener('click', function() {
+            const journalEntry = pentestJournal.value;
+            const timestamp = new Date().toISOString();
+            const logEntry = `${timestamp}: ${journalEntry}`;
+            document.getElementById('pentest-log').innerHTML += `<p>${logEntry}</p>`;
+            pentestJournal.value = '';
+        });
+
+        function formatGuide(guide) {
+            const sections = guide.split(/(?=<h[23]>)/);
+            return sections.map(section => {
+                const match = section.match(/<h([23])>(.*?)<\/h\1>/);
+                if (match) {
+                    const [fullMatch, level, title] = match;
+                    const content = section.replace(fullMatch, '');
+                    return `
+                        <div class="guide-section">
+                            <h${level}>${title}</h${level}>
+                            ${content.replace(/```([\s\S]*?)```/g, '<pre class="command-example"><code>$1</code></pre>')}
+                        </div>
+                    `;
+                }
+                return section;
+            }).join('');
+        }
+
+        async function generateReport() {
+            const journalEntries = document.getElementById('pentest-log').innerText;
+            const guide = pentestGuideDiv.innerHTML;
+            const prompt = `Generate a comprehensive pentest report based on the following guide and journal entries:\n\nGuide:\n${guide}\n\nJournal Entries:\n${journalEntries}`;
+            
+            try {
+                const response = await puter.ai.chat(prompt, {
+                    model: 'gpt-4',
+                    max_tokens: 3000,
+                    temperature: 0.7
+                });
+                
+                const reportWindow = window.open('', 'Pentest Report', 'width=800,height=600');
+                reportWindow.document.write('<html><head><title>Pentest Report</title></head><body>');
+                reportWindow.document.write('<h1>Penetration Testing Report</h1>');
+                reportWindow.document.write(formatGuide(response));
+                reportWindow.document.write('</body></html>');
+            } catch (error) {
+                logError(error);
+                puter.ui.alert('Error generating report. Please try again.');
+            }
+        }
+
+        document.getElementById('generate-report').addEventListener('click', generateReport);
+
+        initializeQuickTools();
+
+        mainWebShellInput.addEventListener('keypress', async function(e) {
+            if (e.key === 'Enter') {
+                const command = this.value;
+                mainWebShellOutput.innerHTML += `<div>user@webshell:~$ ${command}</div>`;
+                try {
+                    const response = await fetch('/api/webshell', {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify({ command })
+                    });
+                    const result = await response.text();
+                    mainWebShellOutput.innerHTML += `<div>${result}</div>`;
+                } catch (error) {
+                    logError(error);
+                    mainWebShellOutput.innerHTML += '<div>Error executing command. Please try again.</div>';
+                }
+                this.value = '';
+                mainWebShellOutput.scrollTop = mainWebShellOutput.scrollHeight;
+            }
+        });
+
+        document.querySelectorAll('.quick-tools .btn').forEach(button => {
+            button.addEventListener('click', async function() {
+                const tool = this.id.replace('setup-', '');
+                const command = `sudo apt install ${tool} -y`;
+                mainWebShellInput.value = command;
+                mainWebShellInput.dispatchEvent(new KeyboardEvent('keypress', {'key': 'Enter'}));
+            });
+        });
+
+        document.querySelectorAll('.predefined-cmd').forEach(button => {
+            button.addEventListener('click', function() {
+                const command = this.getAttribute('data-cmd');
+                mainWebShellInput.value = command;
+                mainWebShellInput.dispatchEvent(new KeyboardEvent('keypress', {'key': 'Enter'}));
+            });
+        });
+
+        const sidebarRight = document.querySelector('.sidebar-right');
+        const webShellQuickAccess = document.createElement('div');
+        webShellQuickAccess.innerHTML = `
+            <h3>Web Shell Quick Access</h3>
+            <button class="btn" id="open-web-shell">Open Web Shell</button>
+        `;
+        sidebarRight.insertBefore(webShellQuickAccess, sidebarRight.firstChild);
+
+        document.getElementById('open-web-shell').addEventListener('click', function() {
+            document.querySelector('[data-tab="web-shell"]').click();
+        });
+
+        // Integrated Search Functionality
+        const searchBtn = document.getElementById('search-btn');
+        const searchQuery = document.getElementById('search-query');
+        const searchResults = document.getElementById('search-results');
+
+        searchBtn.addEventListener('click', async function() {
+            const query = searchQuery.value;
+            await performIntegratedSearch(query);
+        });
+    });
+</script>
+</head>
+<body>
+<div class="container">
+    <header class="header">
+        <svg class="logo" viewBox="0 0 200 60" xmlns="http://www.w3.org/2000/svg">
+            <defs>
+                <linearGradient id="gradient" x1="0%" y1="0%" x2="100%" y2="0%">
+                    <stop offset="0%" style="stop-color:#4CAF50;stop-opacity:1" />
+                    <stop offset="100%" style="stop-color:#2196F3;stop-opacity:1" />
+                </linearGradient>
+            </defs>
+            <path d="M10,30 Q30,5 50,30 T90,30 T130,30 T170,30" stroke="url(#gradient)" stroke-width="5" fill="none" />
+            <circle cx="90" cy="30" r="20" fill="#333" />
+            <path d="M80,30 L100,30 M90,20 L90,40" stroke="#fff" stroke-width="2" />
+            <path d="M70,10 L110,50 M110,10 L70,50" stroke="#fff" stroke-width="2" />
+            <text x="10" y="55" fill="#333" font-family="Arial" font-size="14" font-weight="bold">HackScope Pro</text>
+        </svg>
+        <div class="search-bar">
+            <input type="text" id="scope-url" placeholder="Enter HackerOne program URL or custom scope">
+        </div>
+        <button class="btn" id="generate-guide">Generate Guide</button>
+        <button class="btn" id="improve-guide">Improve Guide</button>
+    </header>
+
+    <div class="sidebar">
+        <h3>Pentest Customization</h3>
+        <div class="option">
+            <input type="checkbox" id="add-sqlmap">
+            <label for="add-sqlmap">SQLMap (SQL Injection)</label>
+        </div>
+        <div class="option">
+            <input type="checkbox" id="add-dirb">
+            <label for="add-dirb">DIRB (Directory Brute-force)</label>
+        </div>
+        <div class="option">
+            <input type="checkbox" id="add-metasploit">
+            <label for="add-metasploit">Metasploit Framework</label>
+        </div>
+        <div class="option">
+            <input type="checkbox" id="add-wireshark">
+            <label for="add-wireshark">Wireshark (Network Analysis)</label>
+        </div>
+        <div class="option">
+            <input type="checkbox" id="add-hydra">
+            <label for="add-hydra">Hydra (Password Attacks)</label>
+        </div>
+        <div class="option">
+            <input type="checkbox" id="add-burp-suite">
+            <label for="add-burp-suite">Burp Suite (Web App Security)</label>
+        </div>
+        <div class="option">
+            <input type="checkbox" id="add-nmap">
+            <label for="add-nmap">Nmap (Network Discovery)</label>
+        </div>
+        <div class="option">
+            <input type="checkbox" id="add-nikto">
+            <label for="add-nikto">Nikto (Web Server Scanner)</label>
+        </div>
+        <h3>AI Assistance Level</h3>
+        <input type="range" id="ai-assistance" min="1" max="5" value="3">
+        <p id="ai-level-display">Moderate AI Assistance</p>
+        <h3>Pentest Journal</h3>
+        <textarea id="pentest-journal" rows="10" cols="30"></textarea>
+        <button class="btn" id="save-journal">Save Entry</button>
+        <h3>Quick Actions</h3>
+        <button class="btn" id="optimize-workflow">Optimize Workflow</button>
+        <button class="btn" id="generate-report">Generate Report</button>
+    </div>
+
+    <main class="main-content">
+        <div id="pentest-guide">
+            <h2>Welcome to HackScope Pro</h2>
+            <p>Enter a HackerOne program URL or custom scope and click "Generate Guide" to start. Our AI will analyze the scope and create a tailored penetration testing plan.</p>
+        </div>
+        <div class="progress-bar">
+            <div class="progress" id="guide-progress"></div>
+        </div>
+        <p class="status" id="guide-status">Ready to generate guide</p>
+        
+        <div class="tab-container">
+            <div class="tab-buttons">
+                <button class="tab-button active" data-tab="ai-insights">AI Insights</button>
+                <button class="tab-button" data-tab="vulnerabilities">Vulnerabilities</button>
+                <button class="tab-button" data-tab="optimization">Optimization</button>
+                <button class="tab-button" data-tab="logging">Logging</button>
+                <button class="tab-button" data-tab="web-shell">Linux Web Shell</button>
+                <button class="tab-button" data-tab="integrated-search">Integrated Search</button>
+            </div>
+            <div id="ai-insights" class="tab-content active">
+                <h3>AI-Powered Analysis</h3>
+                <div id="ai-insights-content">
+                    AI-powered analysis and recommendations will appear here once a guide is generated.
+                </div>
+            </div>
+            <div id="vulnerabilities" class="tab-content">
+                <h3>Potential Vulnerabilities</h3>
+                <ul class="vulnerability-list" id="vulnerability-list">
+                    <!-- Vulnerabilities will be dynamically added here -->
+                </ul>
+            </div>
+            <div id="optimization" class="tab-content">
+                <h3>Workflow Optimization</h3>
+                <div class="optimization-tips" id="optimization-tips">
+                    Optimization tips will be generated based on your current workflow and scope.
+                </div>
+            </div>
+            <div id="logging" class="tab-content">
+                <h3>Pentest Logging</h3>
+                <div id="pentest-log"></div>
+                <button class="btn" id="generate-report">Generate Report</button>
+            </div>
+            <div id="web-shell" class="tab-content">
+                <h3>Linux Web Shell</h3>
+                <div class="terminal" id="main-web-shell">
+                    <div class="terminal-output"></div>
+                    <div class="terminal-input-line">
+                        <span class="prompt">user@webshell:~$ </span>
+                        <input type="text" class="terminal-input" id="main-web-shell-input">
+                    </div>
+                </div>
+                <div class="quick-tools">
+                    <h4>Quick Setup Tools</h4>
+                    <button class="btn" id="setup-nmap">Setup Nmap</button>
+                    <button class="btn" id="setup-metasploit">Setup Metasploit</button>
+                    <button class="btn" id="setup-burpsuite">Setup Burp Suite</button>
+                    <button class="btn" id="setup-sqlmap">Setup SQLMap</button>
+                </div>
+                <div class="predefined-commands">
+                    <h4>Predefined Commands</h4>
+                    <button class="btn predefined-cmd" data-cmd="sudo apt update && sudo apt upgrade -y">Update System</button>
+                    <button class="btn predefined-cmd" data-cmd="sudo apt install nmap metasploit-framework burpsuite sqlmap -y">Install Essential Tools</button>
+                    <button class="btn predefined-cmd" data-cmd="nmap -sV -p- localhost">Scan Local Ports</button>
+                    <button class="btn predefined-cmd" data-cmd="msfconsole">Launch Metasploit</button>
+                </div>
+            </div>
+            <div id="integrated-search" class="tab-content">
+                <h3>Integrated Search</h3>
+                <input type="text" id="search-query" placeholder="Enter IP, domain, or keyword">
+                <button class="btn" id="search-btn">Search</button>
+                <div id="search-results"></div>
+            </div>
+        </div>
+        
+        <div class="dashboard">
+            <div class="dashboard-card">
+                <h3>Scope Overview</h3>
+                <div id="scope-overview">No scope analyzed yet.</div>
+            </div>
+            <div class="dashboard-card">
+                <h3>Progress Tracker</h3>
+                <div id="progress-tracker">0% Complete</div>
+            </div>
+            <div class="dashboard-card">
+                <h3>Time Estimation</h3>
+                <div id="time-estimation">Estimated time: N/A</div>
+            </div>
+        </div>
+        
+        <div class="resource-links">
+            <h3>Useful Resources</h3>
+            <a href="#" id="owasp-link">OWASP Top 10</a>
+            <a href="#" id="cve-link">CVE Database</a>
+            <a href="#" id="exploit-db-link">Exploit Database</a>
+        </div>
+    </main>
+
+    <div class="sidebar-right">
+        <h3>AI Pentest Assistant</h3>
+        <div class="chat-box">
+            <div class="chat-messages" id="chat-messages">
+                <p><strong>AI Assistant:</strong> Welcome to HackScope Pro! I'm your advanced AI-powered pentest assistant. How can I help optimize your penetration testing process today?</p>
+            </div>
+            <input type="text" class="chat-input" id="chat-input" placeholder="Ask me anything about pentesting...">
+        </div>
+        <h3>Read Aloud</h3>
+        <button class="btn" id="read-aloud">Read Selected Text</button>
+        <select id="voice-select"></select>
+        <h3>Voice Interaction</h3>
+        <button class="btn" id="start-voice">Start Voice Interaction</button>
+        <button class="btn" id="stop-voice" style="display: none;">Stop Voice Interaction</button>
+        <h3>Kali Linux Terminal</h3>
+        <div class="terminal" id="kali-terminal">
+            <div class="terminal-output"></div>
+            <div class="terminal-input-line">
+                <span class="prompt">root@kali:~# </span>
+                <input type="text" class="terminal-input" id="terminal-input">
+            </div>
+        </div>
+        <h3>Linux Web Shell</h3>
+        <div class="terminal" id="web-shell">
+            <div class="terminal-output"></div>
+            <div class="terminal-input-line">
+                <span class="prompt">user@webshell:~$ </span>
+                <input type="text" class="terminal-input" id="web-shell-input">
+            </div>
+        </div>
+        <h3>Quick Tools</h3>
+        <button class="btn" id="port-scanner">Port Scanner</button>
+        <button class="btn" id="hash-cracker">Hash Cracker</button>
+        <button class="btn" id="payload-generator">Payload Generator</button>
+    </div>
+</div>
+
+</body>
+</html>
